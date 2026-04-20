@@ -9,7 +9,9 @@ Module.register("MMM-OperationsBridge", {
     frameHeight: "100vh",
     frameWidth: "100%",
     allowInteraction: false,
-    maxSignalsPerSite: 4,
+    layout: "lower_third",
+    maxSignalsPerSite: 2,
+    maxSites: 1,
     showActions: false,
   },
 
@@ -19,6 +21,8 @@ Module.register("MMM-OperationsBridge", {
     this.lastRefreshAt = null
     this.updateTimer = null
     this.eventSource = null
+    this.feedSignature = null
+    this.fetchInFlight = false
 
     if (this.config.mode === "iframe") {
       this.lastReloadAt = Date.now()
@@ -47,17 +51,29 @@ Module.register("MMM-OperationsBridge", {
   },
 
   async fetchFeed() {
+    if (this.fetchInFlight) return
+    this.fetchInFlight = true
+
     try {
       const response = await fetch(this.config.dataUrl, { cache: "no-store" })
       if (!response.ok) throw new Error(`Feed returned ${response.status}`)
-      this.feed = await response.json()
+      const nextFeed = await response.json()
+      const nextSignature = JSON.stringify(nextFeed)
+      const changed = nextSignature !== this.feedSignature
+      this.feed = nextFeed
+      this.feedSignature = nextSignature
       this.error = null
       this.lastRefreshAt = Date.now()
+      if (changed) this.updateDom(0)
     } catch (error) {
-      this.error = error instanceof Error ? error.message : "Feed refresh failed"
+      const nextError = error instanceof Error ? error.message : "Feed refresh failed"
+      if (nextError !== this.error) {
+        this.error = nextError
+        this.updateDom(0)
+      }
+    } finally {
+      this.fetchInFlight = false
     }
-
-    this.updateDom(300)
   },
 
   connectEvents() {
@@ -72,8 +88,10 @@ Module.register("MMM-OperationsBridge", {
       this.fetchFeed()
     })
     this.eventSource.onerror = () => {
-      this.error = this.error || "Live event stream unavailable, using refresh interval"
-      this.updateDom(300)
+      if (!this.error) {
+        this.error = "Live event stream unavailable, using refresh interval"
+        this.updateDom(0)
+      }
     }
   },
 
@@ -100,7 +118,7 @@ Module.register("MMM-OperationsBridge", {
     }
 
     const wrapper = document.createElement("div")
-    wrapper.className = "mmm-operations-bridge mmm-operations-bridge--data"
+    wrapper.className = `mmm-operations-bridge mmm-operations-bridge--data mmm-operations-bridge--${this.config.layout}`
 
     const header = document.createElement("div")
     header.className = "mmm-ob-header"
@@ -226,7 +244,7 @@ Module.register("MMM-OperationsBridge", {
       empty.textContent = this.error || "Awaiting live data"
       sitesGrid.appendChild(empty)
     } else {
-      this.feed.sites.forEach((site) => {
+      this.feed.sites.slice(0, this.config.maxSites).forEach((site) => {
         const card = document.createElement("div")
         card.className = "mmm-ob-site"
 
@@ -347,6 +365,6 @@ Module.register("MMM-OperationsBridge", {
       this.scheduleDataRefresh()
       this.connectEvents()
     }
-    this.updateDom(300)
+    this.updateDom(0)
   },
 })

@@ -21,6 +21,12 @@
   gap: 14px;
 }
 
+.mmm-operations-bridge--lower_third {
+  padding: 10px 12px;
+  gap: 10px;
+  border-radius: 14px;
+}
+
 .mmm-ob-header,
 .mmm-ob-site-header,
 .mmm-ob-footer,
@@ -44,6 +50,20 @@
   font-weight: 700;
 }
 
+.mmm-operations-bridge--lower_third .mmm-ob-title {
+  font-size: 1rem;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-eyebrow,
+.mmm-operations-bridge--lower_third .mmm-ob-refresh,
+.mmm-operations-bridge--lower_third .mmm-ob-footer,
+.mmm-operations-bridge--lower_third .mmm-ob-site-left p,
+.mmm-operations-bridge--lower_third .mmm-ob-count-tile p,
+.mmm-operations-bridge--lower_third .mmm-ob-surface-copy,
+.mmm-operations-bridge--lower_third .mmm-ob-list-row span {
+  font-size: 0.72rem;
+}
+
 .mmm-ob-refresh,
 .mmm-ob-footer,
 .mmm-ob-site-left p,
@@ -58,6 +78,11 @@
   gap: 10px;
 }
 
+.mmm-operations-bridge--lower_third .mmm-ob-counts {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
 .mmm-ob-surfaces,
 .mmm-ob-lists {
   display: grid;
@@ -67,6 +92,16 @@
 
 .mmm-ob-lists {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-surfaces {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-lists {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .mmm-ob-count-tile,
@@ -84,6 +119,14 @@
 .mmm-ob-list,
 .mmm-ob-site {
   padding: 12px 14px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-count-tile,
+.mmm-operations-bridge--lower_third .mmm-ob-surface-tile,
+.mmm-operations-bridge--lower_third .mmm-ob-list,
+.mmm-operations-bridge--lower_third .mmm-ob-site {
+  padding: 8px 10px;
+  border-radius: 10px;
 }
 
 .mmm-ob-surface-tile,
@@ -105,6 +148,10 @@
   font-weight: 700;
 }
 
+.mmm-operations-bridge--lower_third .mmm-ob-surface-metric {
+  font-size: 1rem;
+}
+
 .mmm-ob-surface-copy,
 .mmm-ob-list-row span {
   color: #9eb0c8;
@@ -118,6 +165,11 @@
   gap: 12px;
   padding-top: 6px;
   border-top: 1px solid rgba(173, 188, 255, 0.08);
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-list-row strong {
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 .mmm-ob-list-row:first-of-type {
@@ -154,6 +206,11 @@
   gap: 12px;
 }
 
+.mmm-operations-bridge--lower_third .mmm-ob-sites {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
 .mmm-ob-site {
   display: grid;
   gap: 12px;
@@ -165,6 +222,11 @@
   font-size: 0.76rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-status {
+  padding: 3px 8px;
+  font-size: 0.66rem;
 }
 
 .mmm-ob-status--success {
@@ -186,10 +248,20 @@
   line-height: 1.4;
 }
 
+.mmm-operations-bridge--lower_third .mmm-ob-summary {
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
 .mmm-ob-signals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-signals {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .mmm-ob-signal {
@@ -207,6 +279,18 @@
 
 .mmm-ob-signal strong {
   font-size: 0.88rem;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-signal {
+  padding: 6px 8px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-signal span {
+  font-size: 0.56rem;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-signal strong {
+  font-size: 0.72rem;
 }
 
 .mmm-ob-signal--success {
