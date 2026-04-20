@@ -68,17 +68,11 @@ The current live feed is served by Operations Bridge at:
 It returns:
 - global fleet counts by health bucket
 - checked-at timestamp
+- Dispatch queue and findings summary
+- Operations lane counts and active cards
+- Build playbook count
 - per-site live summary
 - per-site prioritized top signals
 - optional action links
 
-## Important limitation
-
-Today the live data feed covers server-known Holonet/business telemetry.
-It does **not** yet include browser-local Dispatch or Operations board state, because those surfaces are still client-local rather than server-backed.
-
-So the MagicMirror module will now reflect:
-- live Holonet telemetry changes automatically
-- server-side OB feed changes automatically
-
-But it will **not yet** reflect browser-local queue/board edits until those surfaces are moved onto a shared server-side state model.
+The Operations Bridge app now shares queue, findings, board, build, and site state through the server feed, so MagicMirror reflects live OB surface changes as they are saved into the shared model.

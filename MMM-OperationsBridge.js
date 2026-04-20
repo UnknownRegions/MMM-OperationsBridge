@@ -132,6 +132,71 @@ Module.register("MMM-OperationsBridge", {
     })
     wrapper.appendChild(countsRow)
 
+    const bridge = this.feed?.bridge || {
+      dispatch: { queueTotal: 0, findingsTotal: 0, awaitingCommand: 0, reviewBeforeAdmit: 0, topQueue: [] },
+      operations: { lanes: { Ready: 0, Active: 0, Review: 0, Done: 0 }, activeCards: [] },
+      build: { playbooksTotal: 0 },
+    }
+
+    const surfaceRow = document.createElement("div")
+    surfaceRow.className = "mmm-ob-surfaces"
+
+    const dispatchTile = document.createElement("div")
+    dispatchTile.className = "mmm-ob-surface-tile"
+    dispatchTile.innerHTML = `<div class="mmm-ob-surface-title">Dispatch</div><div class="mmm-ob-surface-metric">${bridge.dispatch.queueTotal}</div><div class="mmm-ob-surface-copy">Queue, ${bridge.dispatch.findingsTotal} findings</div>`
+    surfaceRow.appendChild(dispatchTile)
+
+    const operationsTile = document.createElement("div")
+    operationsTile.className = "mmm-ob-surface-tile"
+    operationsTile.innerHTML = `<div class="mmm-ob-surface-title">Operations</div><div class="mmm-ob-surface-metric">${bridge.operations.lanes.Active || 0}</div><div class="mmm-ob-surface-copy">Active, ${bridge.operations.lanes.Review || 0} in review</div>`
+    surfaceRow.appendChild(operationsTile)
+
+    const buildTile = document.createElement("div")
+    buildTile.className = "mmm-ob-surface-tile"
+    buildTile.innerHTML = `<div class="mmm-ob-surface-title">Build</div><div class="mmm-ob-surface-metric">${bridge.build.playbooksTotal}</div><div class="mmm-ob-surface-copy">Live playbooks</div>`
+    surfaceRow.appendChild(buildTile)
+
+    wrapper.appendChild(surfaceRow)
+
+    const queueAndOps = document.createElement("div")
+    queueAndOps.className = "mmm-ob-lists"
+
+    const queueList = document.createElement("div")
+    queueList.className = "mmm-ob-list"
+    queueList.innerHTML = '<div class="mmm-ob-list-title">Top queue</div>'
+    ;(bridge.dispatch.topQueue || []).slice(0, 4).forEach((item) => {
+      const row = document.createElement("div")
+      row.className = "mmm-ob-list-row"
+      row.innerHTML = `<strong>${item.title}</strong><span>${item.status}</span>`
+      queueList.appendChild(row)
+    })
+    if (!(bridge.dispatch.topQueue || []).length) {
+      const row = document.createElement("div")
+      row.className = "mmm-ob-list-row"
+      row.innerHTML = '<strong>No queued work</strong><span>Live</span>'
+      queueList.appendChild(row)
+    }
+    queueAndOps.appendChild(queueList)
+
+    const opsList = document.createElement("div")
+    opsList.className = "mmm-ob-list"
+    opsList.innerHTML = '<div class="mmm-ob-list-title">Active operations</div>'
+    ;(bridge.operations.activeCards || []).slice(0, 4).forEach((item) => {
+      const row = document.createElement("div")
+      row.className = "mmm-ob-list-row"
+      row.innerHTML = `<strong>${item.title}</strong><span>${item.owner || 'Unassigned'}</span>`
+      opsList.appendChild(row)
+    })
+    if (!(bridge.operations.activeCards || []).length) {
+      const row = document.createElement("div")
+      row.className = "mmm-ob-list-row"
+      row.innerHTML = '<strong>No active cards</strong><span>Live</span>'
+      opsList.appendChild(row)
+    }
+    queueAndOps.appendChild(opsList)
+
+    wrapper.appendChild(queueAndOps)
+
     const sitesGrid = document.createElement("div")
     sitesGrid.className = "mmm-ob-sites"
 
