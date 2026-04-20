@@ -23,6 +23,7 @@ Module.register("MMM-OperationsBridge", {
     this.eventSource = null
     this.feedSignature = null
     this.fetchInFlight = false
+    this.feedStale = false
 
     if (this.config.mode === "iframe") {
       this.lastReloadAt = Date.now()
@@ -63,11 +64,13 @@ Module.register("MMM-OperationsBridge", {
       this.feed = nextFeed
       this.feedSignature = nextSignature
       this.error = null
+      this.feedStale = false
       this.lastRefreshAt = Date.now()
       if (changed) this.updateDom(0)
     } catch (error) {
       const nextError = error instanceof Error ? error.message : "Feed refresh failed"
-      if (nextError !== this.error) {
+      this.feedStale = true
+      if (nextError !== this.error && !this.feed) {
         this.error = nextError
         this.updateDom(0)
       }
@@ -88,7 +91,8 @@ Module.register("MMM-OperationsBridge", {
       this.fetchFeed()
     })
     this.eventSource.onerror = () => {
-      if (!this.error) {
+      this.feedStale = true
+      if (!this.error && !this.feed) {
         this.error = "Live event stream unavailable, using refresh interval"
         this.updateDom(0)
       }
@@ -136,9 +140,11 @@ Module.register("MMM-OperationsBridge", {
 
     const refresh = document.createElement("div")
     refresh.className = "mmm-ob-refresh"
-    refresh.textContent = this.error
-      ? `Feed error: ${this.error}`
-      : `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))}`
+    refresh.textContent = !this.feed && this.error
+      ? "Waiting for live feed"
+      : this.feedStale
+        ? `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))} · reconnecting`
+        : `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))}`
     header.appendChild(refresh)
     wrapper.appendChild(header)
 
@@ -241,7 +247,7 @@ Module.register("MMM-OperationsBridge", {
     if (!this.feed?.sites?.length) {
       const empty = document.createElement("div")
       empty.className = "mmm-ob-site"
-      empty.textContent = this.error || "Awaiting live data"
+      empty.textContent = this.feedStale ? "Live feed reconnecting" : "Awaiting live data"
       sitesGrid.appendChild(empty)
     } else {
       this.feed.sites.slice(0, this.config.maxSites).forEach((site) => {
