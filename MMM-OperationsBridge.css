@@ -72,6 +72,10 @@
   font-size: 0.82rem;
 }
 
+.mmm-ob-refresh:empty {
+  display: none;
+}
+
 .mmm-ob-counts {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

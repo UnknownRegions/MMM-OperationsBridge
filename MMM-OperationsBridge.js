@@ -140,11 +140,9 @@ Module.register("MMM-OperationsBridge", {
 
     const refresh = document.createElement("div")
     refresh.className = "mmm-ob-refresh"
-    refresh.textContent = !this.feed && this.error
-      ? "Waiting for live feed"
-      : this.feedStale
-        ? `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))} · reconnecting`
-        : `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))}`
+    refresh.textContent = this.feed?.checkedAt || this.lastRefreshAt
+      ? `Last refresh ${this.formatTime(this.feed?.checkedAt || (this.lastRefreshAt ? new Date(this.lastRefreshAt).toISOString() : undefined))}`
+      : ""
     header.appendChild(refresh)
     wrapper.appendChild(header)
 
@@ -247,7 +245,7 @@ Module.register("MMM-OperationsBridge", {
     if (!this.feed?.sites?.length) {
       const empty = document.createElement("div")
       empty.className = "mmm-ob-site"
-      empty.textContent = this.feedStale ? "Live feed reconnecting" : "Awaiting live data"
+      empty.innerHTML = '<div class="mmm-ob-site-header"><div class="mmm-ob-site-left"><span class="mmm-ob-light mmm-ob-light--warning"></span><div><strong>Operations Bridge</strong><p>Live data warming up</p></div></div></div>'
       sitesGrid.appendChild(empty)
     } else {
       this.feed.sites.slice(0, this.config.maxSites).forEach((site) => {
