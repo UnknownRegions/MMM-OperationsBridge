@@ -68,6 +68,9 @@ Module.register("MMM-OperationsBridge", {
     this.eventSource.addEventListener("bridge-state", () => {
       this.fetchFeed()
     })
+    this.eventSource.addEventListener("bridge-tick", () => {
+      this.fetchFeed()
+    })
     this.eventSource.onerror = () => {
       this.error = this.error || "Live event stream unavailable, using refresh interval"
       this.updateDom(300)

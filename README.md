@@ -79,3 +79,5 @@ It returns:
 The Operations Bridge app now shares queue, findings, board, build, and site state through the server feed, so MagicMirror reflects live OB surface changes as they are saved into the shared model.
 
 It also listens to the bridge event stream so shared-state changes can appear near instantly without waiting for the next poll interval. Polling remains as fallback protection.
+
+The bridge server also emits a periodic heartbeat tick, so the full dashboard and wallboard keep re-syncing on an active cadence even when no one manually changes state.
