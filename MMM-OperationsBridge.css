@@ -1,0 +1,12 @@
+.mmm-operations-bridge {
+  display: block;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #030712;
+}
+
+.mmm-operations-bridge__frame {
+  display: block;
+  border: 0;
+  background: #030712;
+}
