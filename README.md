@@ -51,6 +51,7 @@ The recommended posture is now `data` mode for lighter-weight live wallboard ren
 |---|---|---:|---|
 | `mode` | string | `"data"` | `data` renders from JSON feed, `iframe` embeds the mirror UI |
 | `dataUrl` | string | `"http://localhost:3000/api/mirror/status"` | Live OB JSON feed for native MagicMirror rendering |
+| `eventsUrl` | string | `"http://localhost:3000/api/bridge/events"` | SSE event stream for near-instant wallboard refresh when OB state changes |
 | `bridgeUrl` | string | `"http://localhost:3000/?view=mirror"` | Browser mirror surface when using iframe mode |
 | `refreshSeconds` | number | `30` | Poll interval for data mode or reload interval for iframe mode |
 | `maxSignalsPerSite` | number | `4` | Maximum live telemetry signals shown per site card in data mode |
@@ -76,3 +77,5 @@ It returns:
 - optional action links
 
 The Operations Bridge app now shares queue, findings, board, build, and site state through the server feed, so MagicMirror reflects live OB surface changes as they are saved into the shared model.
+
+It also listens to the bridge event stream so shared-state changes can appear near instantly without waiting for the next poll interval. Polling remains as fallback protection.

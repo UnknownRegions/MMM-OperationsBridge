@@ -2,6 +2,7 @@ Module.register("MMM-OperationsBridge", {
   defaults: {
     mode: "data",
     dataUrl: "http://localhost:3000/api/mirror/status",
+    eventsUrl: "http://localhost:3000/api/bridge/events",
     bridgeUrl: "http://localhost:3000/?view=mirror",
     refreshSeconds: 30,
     zoom: 1,
@@ -17,6 +18,7 @@ Module.register("MMM-OperationsBridge", {
     this.error = null
     this.lastRefreshAt = null
     this.updateTimer = null
+    this.eventSource = null
 
     if (this.config.mode === "iframe") {
       this.lastReloadAt = Date.now()
@@ -26,6 +28,7 @@ Module.register("MMM-OperationsBridge", {
 
     this.fetchFeed()
     this.scheduleDataRefresh()
+    this.connectEvents()
   },
 
   scheduleIframeRefresh() {
@@ -55,6 +58,20 @@ Module.register("MMM-OperationsBridge", {
     }
 
     this.updateDom(300)
+  },
+
+  connectEvents() {
+    if (typeof EventSource === "undefined") return
+    if (this.eventSource) this.eventSource.close()
+
+    this.eventSource = new EventSource(this.config.eventsUrl)
+    this.eventSource.addEventListener("bridge-state", () => {
+      this.fetchFeed()
+    })
+    this.eventSource.onerror = () => {
+      this.error = this.error || "Live event stream unavailable, using refresh interval"
+      this.updateDom(300)
+    }
   },
 
   getStyles() {
@@ -312,6 +329,10 @@ Module.register("MMM-OperationsBridge", {
       clearInterval(this.updateTimer)
       this.updateTimer = null
     }
+    if (this.eventSource) {
+      this.eventSource.close()
+      this.eventSource = null
+    }
   },
 
   resume() {
@@ -321,6 +342,7 @@ Module.register("MMM-OperationsBridge", {
     } else {
       this.fetchFeed()
       this.scheduleDataRefresh()
+      this.connectEvents()
     }
     this.updateDom(300)
   },
