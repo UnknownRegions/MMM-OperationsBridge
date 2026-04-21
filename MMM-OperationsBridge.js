@@ -174,20 +174,22 @@ Module.register("MMM-OperationsBridge", {
     })
 
     const actionCounts = this.feed?.actionCounts || { act: 0, monitor: 0, clear: 0 }
-    const actionTile = document.createElement("div")
-    actionTile.className = "mmm-ob-count-tile mmm-ob-count-tile--priority"
-    const actionLight = document.createElement("span")
-    actionLight.className = `mmm-ob-light mmm-ob-light--${actionCounts.act ? 'danger' : actionCounts.monitor ? 'warning' : 'success'}`
-    const actionText = document.createElement("div")
-    const actionStrong = document.createElement("strong")
-    actionStrong.textContent = actionCounts.act ? 'Action required' : actionCounts.monitor ? 'Monitor' : 'No action'
-    const actionP = document.createElement("p")
-    actionP.textContent = `${actionCounts.act} act, ${actionCounts.monitor} monitor`
-    actionText.appendChild(actionStrong)
-    actionText.appendChild(actionP)
-    actionTile.appendChild(actionLight)
-    actionTile.appendChild(actionText)
-    countsRow.prepend(actionTile)
+    if (actionCounts.act || actionCounts.monitor) {
+      const actionTile = document.createElement("div")
+      actionTile.className = "mmm-ob-count-tile mmm-ob-count-tile--priority"
+      const actionLight = document.createElement("span")
+      actionLight.className = `mmm-ob-light mmm-ob-light--${actionCounts.act ? 'danger' : 'warning'}`
+      const actionText = document.createElement("div")
+      const actionStrong = document.createElement("strong")
+      actionStrong.textContent = actionCounts.act ? 'Action required' : 'Monitor'
+      const actionP = document.createElement("p")
+      actionP.textContent = `${actionCounts.act} act, ${actionCounts.monitor} monitor`
+      actionText.appendChild(actionStrong)
+      actionText.appendChild(actionP)
+      actionTile.appendChild(actionLight)
+      actionTile.appendChild(actionText)
+      countsRow.prepend(actionTile)
+    }
     wrapper.appendChild(countsRow)
 
     const bridge = this.feed?.bridge || {
@@ -327,7 +329,7 @@ Module.register("MMM-OperationsBridge", {
         summary.textContent = site.summary || "No summary available"
         card.appendChild(summary)
 
-        if (site.actionSummary) {
+        if (site.actionSummary && site.actionState !== 'clear') {
           const actionRow = document.createElement("div")
           actionRow.className = `mmm-ob-action mmm-ob-action--${site.actionState || 'success'}`
           actionRow.textContent = site.actionSummary
