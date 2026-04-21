@@ -172,6 +172,22 @@ Module.register("MMM-OperationsBridge", {
       tile.appendChild(text)
       countsRow.appendChild(tile)
     })
+
+    const actionCounts = this.feed?.actionCounts || { act: 0, monitor: 0, clear: 0 }
+    const actionTile = document.createElement("div")
+    actionTile.className = "mmm-ob-count-tile mmm-ob-count-tile--priority"
+    const actionLight = document.createElement("span")
+    actionLight.className = `mmm-ob-light mmm-ob-light--${actionCounts.act ? 'danger' : actionCounts.monitor ? 'warning' : 'success'}`
+    const actionText = document.createElement("div")
+    const actionStrong = document.createElement("strong")
+    actionStrong.textContent = actionCounts.act ? 'Action required' : actionCounts.monitor ? 'Monitor' : 'No action'
+    const actionP = document.createElement("p")
+    actionP.textContent = `${actionCounts.act} act, ${actionCounts.monitor} monitor`
+    actionText.appendChild(actionStrong)
+    actionText.appendChild(actionP)
+    actionTile.appendChild(actionLight)
+    actionTile.appendChild(actionText)
+    countsRow.prepend(actionTile)
     wrapper.appendChild(countsRow)
 
     const bridge = this.feed?.bridge || {
@@ -179,6 +195,7 @@ Module.register("MMM-OperationsBridge", {
       operations: { lanes: { Ready: 0, Active: 0, Review: 0, Done: 0 }, activeCards: [] },
       build: { playbooksTotal: 0 },
     }
+    const program = this.feed?.program || null
 
     const surfaceRow = document.createElement("div")
     surfaceRow.className = "mmm-ob-surfaces"
@@ -198,7 +215,35 @@ Module.register("MMM-OperationsBridge", {
     buildTile.innerHTML = `<div class="mmm-ob-surface-title">Build</div><div class="mmm-ob-surface-metric">${bridge.build.playbooksTotal}</div><div class="mmm-ob-surface-copy">Live playbooks</div>`
     surfaceRow.appendChild(buildTile)
 
+    if (program) {
+      const programTile = document.createElement("div")
+      programTile.className = "mmm-ob-surface-tile"
+      programTile.innerHTML = `<div class="mmm-ob-surface-title">Design loop</div><div class="mmm-ob-surface-metric">${program.dailyTarget}</div><div class="mmm-ob-surface-copy">${program.phase}</div>`
+      surfaceRow.appendChild(programTile)
+    }
+
     wrapper.appendChild(surfaceRow)
+
+    if (program) {
+      const programPanel = document.createElement("div")
+      programPanel.className = "mmm-ob-program"
+      programPanel.innerHTML = `
+        <div class="mmm-ob-program-head">
+          <div>
+            <div class="mmm-ob-list-title">${program.title}</div>
+            <strong>${program.lowestCategory ? `${program.lowestCategory.label} (${program.lowestCategory.count})` : 'No active category pressure'}</strong>
+          </div>
+          <span class="mmm-ob-status mmm-ob-status--warning">${program.phase}</span>
+        </div>
+        <div class="mmm-ob-program-grid">
+          <div class="mmm-ob-program-cell"><span>Reserve</span><strong>${program.reserveReady}/${program.reserveTarget}</strong></div>
+          <div class="mmm-ob-program-cell"><span>Approved</span><strong>${program.approvedToday}</strong></div>
+          <div class="mmm-ob-program-cell"><span>Published</span><strong>${program.publishedToday}</strong></div>
+          <div class="mmm-ob-program-cell"><span>Next run</span><strong>${program.nextRunDate || 'Unset'}</strong></div>
+        </div>
+      `
+      wrapper.appendChild(programPanel)
+    }
 
     const queueAndOps = document.createElement("div")
     queueAndOps.className = "mmm-ob-lists"
@@ -281,6 +326,13 @@ Module.register("MMM-OperationsBridge", {
         summary.className = "mmm-ob-summary"
         summary.textContent = site.summary || "No summary available"
         card.appendChild(summary)
+
+        if (site.actionSummary) {
+          const actionRow = document.createElement("div")
+          actionRow.className = `mmm-ob-action mmm-ob-action--${site.actionState || 'success'}`
+          actionRow.textContent = site.actionSummary
+          card.appendChild(actionRow)
+        }
 
         const signalGrid = document.createElement("div")
         signalGrid.className = "mmm-ob-signals"

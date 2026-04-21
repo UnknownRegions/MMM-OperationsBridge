@@ -82,6 +82,11 @@
   gap: 10px;
 }
 
+.mmm-ob-count-tile--priority {
+  border-color: rgba(210, 188, 138, 0.24);
+  background: linear-gradient(180deg, rgba(116, 25, 31, 0.08), rgba(255, 255, 255, 0.03));
+}
+
 .mmm-operations-bridge--lower_third .mmm-ob-counts {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
@@ -94,6 +99,10 @@
   gap: 10px;
 }
 
+.mmm-ob-surfaces:has(.mmm-ob-surface-tile:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .mmm-ob-lists {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -101,6 +110,10 @@
 .mmm-operations-bridge--lower_third .mmm-ob-surfaces {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-surfaces:has(.mmm-ob-surface-tile:nth-child(4)) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .mmm-operations-bridge--lower_third .mmm-ob-lists {
@@ -111,6 +124,7 @@
 .mmm-ob-count-tile,
 .mmm-ob-surface-tile,
 .mmm-ob-list,
+.mmm-ob-program,
 .mmm-ob-site,
 .mmm-ob-signal {
   border-radius: 14px;
@@ -121,6 +135,7 @@
 .mmm-ob-count-tile,
 .mmm-ob-surface-tile,
 .mmm-ob-list,
+.mmm-ob-program,
 .mmm-ob-site {
   padding: 12px 14px;
 }
@@ -128,9 +143,67 @@
 .mmm-operations-bridge--lower_third .mmm-ob-count-tile,
 .mmm-operations-bridge--lower_third .mmm-ob-surface-tile,
 .mmm-operations-bridge--lower_third .mmm-ob-list,
+.mmm-operations-bridge--lower_third .mmm-ob-program,
 .mmm-operations-bridge--lower_third .mmm-ob-site {
   padding: 8px 10px;
   border-radius: 10px;
+}
+
+.mmm-ob-program {
+  display: grid;
+  gap: 10px;
+}
+
+.mmm-ob-program-head,
+.mmm-ob-program-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.mmm-ob-program-head {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.mmm-ob-program-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mmm-ob-program-cell {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(173, 188, 255, 0.08);
+}
+
+.mmm-ob-program-cell span {
+  color: #9eb0c8;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mmm-ob-program-cell strong {
+  font-size: 1rem;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-program-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-program-cell {
+  padding: 8px;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-program-cell span {
+  font-size: 0.68rem;
+}
+
+.mmm-operations-bridge--lower_third .mmm-ob-program-cell strong {
+  font-size: 0.82rem;
 }
 
 .mmm-ob-surface-tile,
@@ -250,6 +323,26 @@
 
 .mmm-ob-summary {
   line-height: 1.4;
+}
+
+.mmm-ob-action {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.mmm-ob-action--act,
+.mmm-ob-action--danger {
+  color: #ffb9b9;
+}
+
+.mmm-ob-action--monitor,
+.mmm-ob-action--warning {
+  color: #ffe0a5;
+}
+
+.mmm-ob-action--clear,
+.mmm-ob-action--success {
+  color: #b8f1cf;
 }
 
 .mmm-operations-bridge--lower_third .mmm-ob-summary {
